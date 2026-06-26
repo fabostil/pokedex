@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:pokedex/models/pokemon.dart';
-import 'package:pokedex/repositories/pokemon_repository.dart';
-import 'package:pokedex/screens/details_screen.dart';
-import 'package:pokedex/screens/favorites_screen.dart';
+import '../models/pokemon.dart';
+import '../repositories/pokemon_repository.dart';
+import 'details_screen.dart';
+import 'favorites_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -24,16 +24,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+          Colors.grey[100], // Fundo levemente cinza para destacar os cards
       appBar: AppBar(
-        title: const Text("Pokédex"),
+        title: const Text(
+          "Pokédex",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
         actions: [
-          // <--- Adicione este botão para acessar a tela de favoritos
           IconButton(
-            icon: const Icon(Icons.favorite),
+            icon: const Icon(Icons.favorite, color: Colors.red),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FavoritesScreen()),
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesScreen(),
+                ),
               );
             },
           ),
@@ -49,21 +56,60 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           final pokemons = snapshot.data!;
-          return ListView.builder(
+
+          // Mudamos de ListView para GridView para ficar MUITO mais bonito
+          return GridView.builder(
+            padding: const EdgeInsets.all(12),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // 2 Pokémons por linha
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+              childAspectRatio: 0.9, // Ajusta a proporção do card
+            ),
             itemCount: pokemons.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                leading: Image.network(pokemons[index].imageUrl),
-                title: Text(pokemons[index].name.toUpperCase()),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DetailsScreen(pokemon: pokemons[index]),
-                    ),
-                  );
-                },
+              final pokemon = pokemons[index];
+              return Card(
+                elevation: 3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(16),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailsScreen(pokemon: pokemon),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.blueGrey[50],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Image.network(
+                          pokemon.imageUrl,
+                          height: 90,
+                          width: 90,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        pokemon.name.toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               );
             },
           );
