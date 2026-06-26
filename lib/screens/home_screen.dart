@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/pokemon.dart';
 import '../repositories/pokemon_repository.dart';
+import 'details_screen.dart';
+import 'favorites_screen.dart'; // <--- Adicione este import
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,7 +24,23 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Pokédex")),
+      appBar: AppBar(
+        title: const Text("Pokédex"),
+        actions: [
+          // <--- Adicione este botão para acessar a tela de favoritos
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FavoritesScreen(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: FutureBuilder<List<Pokemon>>(
         future: _pokemonList,
         builder: (context, snapshot) {
@@ -39,6 +57,15 @@ class _HomeScreenState extends State<HomeScreen> {
               return ListTile(
                 leading: Image.network(pokemons[index].imageUrl),
                 title: Text(pokemons[index].name.toUpperCase()),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          DetailsScreen(pokemon: pokemons[index]),
+                    ),
+                  );
+                },
               );
             },
           );
