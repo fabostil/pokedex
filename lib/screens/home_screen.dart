@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/pokemon.dart';
-import '../repositories/pokemon_repository.dart';
-import 'details_screen.dart';
-import 'favorites_screen.dart'; // <--- Adicione este import
+import 'package:pokedex/models/pokemon.dart';
+import 'package:pokedex/repositories/pokemon_repository.dart';
+import 'package:pokedex/screens/details_screen.dart';
+import 'package:pokedex/screens/favorites_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,9 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const FavoritesScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => FavoritesScreen()),
               );
             },
           ),
